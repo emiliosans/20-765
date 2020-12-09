@@ -20,12 +20,21 @@ function calculaIMC (kg, metros) {
     //window.alert("el IMC es " + imc);
     return imc;
 }
-
+/**
+ * 
+ * Función que muestra el valor nominal
+ * y la imagen correspondiente al imc recibido
+ * 
+ * @param {*} imc el valor real de indice de masa corporal
+ * 
+ */
 function muestraIMC (imc) {
     let resultado = resultadoIMC(imc);
     if (document.querySelector('div')) {
         document.querySelector('div').innerHTML = "Tu IMC es " + resultado;
         document.querySelector('img').setAttribute('src', resultado + '.png');
+
+        
     }
     else {
           //CREAR UN NUEVO ELEMENTO
@@ -35,6 +44,8 @@ function muestraIMC (imc) {
           var nuevo_elemento_img = document.createElement("img");
           nuevo_elemento_img.setAttribute('src', resultado + '.png');
           
+          //tambien se puede hacer asi:
+          //nuevo_elemento_img.src = "./img.jpeg";
 
           //Y AÑADIRLO AL HTML
           let etiqueta_body = document.getElementById("cuerpo");
