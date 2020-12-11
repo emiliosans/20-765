@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!--    
+        HACER UNA APP QUE HAGA LO SIGUIENTE:
+
+        1)LA PÁGINA DEBE PENSAR UN NÚMERO DEL 1 AL 100 Y DEBE DARLE
+        5 OPORTUNIDADES MÁXIMO AL USUARIO PARA
+        DEBEMOS INFORMARLE CADA VEZ QUE PRUEBA SI EL NUMERO INTRIDUCIDO ES MENOR O MAYOR
+        QUE EL BUSCADO  MODO DE PISTA
+
+        SI LO ACIERTA, LE FELICITAMOS
+
+        numero random entre 1 y 100
+        usuario tiene 5 oportunidades para adivinar el numero random
+        tiene que decir el programa si el numero q ha dado el usuario es mayor o menor al random (si el usuario ha fallado el numero), o si has acertado
+
+        tanto para el acierto como para el fallo, mostrar gif gracioso
+
+
+    -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACIERTA EL NÚMERO ALEATORIO</title>
+    <script>
+        let vidas;
+        let aleatorio;
+        let nombreUsuario;
+        window.onload = function () {
+            vidas = 5;
+            aleatorio = calculaAleatorio();
+            window.alert("el numero aleatorio es " + aleatorio);
+            nombreUsuario = localStorage.getItem('nombre');
+            window.alert("el nombre del usuario es " + nombreUsuario);
+            document.getElementById("nombreUsuario").innerHTML = nombreUsuario + " ";
+            document.getElementById("vidas").innerHTML = vidas;
+
+            let clavePartidas = "partida" + nombreUsuario;
+            document.getElementById("partidas").innerHTML = localStorage.getItem(clavePartidas);
+
+            preparaResultado();
+        }
+        //si una funcion la llamas con su nombre + parentesis, el interprete considera q estas haciendo una llamada a esa funcion
+        //si pones solo el nombre la llama despues de cargar toda la página
+
+     
+        function preparaResultado() {
+            document.getElementById('boton').onclick = function () {
+                let numero = document.getElementById("numero").value;
+                //let aleatorio = calculaAleatorio();
+                calculaResultado(numero);
+            }
+        }
+
+        function calculaAleatorio() {
+            //calcular numero aleatorio entre 1 y 100:
+            return Math.floor(Math.random() * 100) + 1;
+        }
+
+        /*function restaVida(vida) {
+            if (vida > 0){
+                vida--;
+            }
+        }*/
+       
+        function calculaResultado(numeroUsuario) {
+
+            //if (vida != 5) {  
+            //let vidas = document.getElementById("vidas").innerHTML;
+            //window.alert("numero de vidas " + vidas);
+            if (numeroUsuario == aleatorio) {
+                document.getElementById("ganar").innerHTML = "HAS GANADO";
+                document.getElementById("resultado").innerHTML = "<iframe src='https://giphy.com/embed/Y3qdARVjj9esNGLEAp' frameborder='0' scrolling='no' width='480' height='270' style='position:absolute;top:0;left:0;' allowfullscreen>";
+                document.getElementById("numero").disabled=true;
+            } else {
+               
+                if (numeroUsuario < aleatorio) {
+                    document.getElementById("ganar").innerHTML = "HAS PERDIDO EL NUMERO ALEATORIO ES MAYOR";
+                } else {
+                    document.getElementById("ganar").innerHTML = "HAS PERDIDO EL NUMERO ALEATORIO ES MENOR";
+                }
+
+                if ((vidas == 1) && (vidas > 0)) {
+                    document.getElementById("hasperdido").innerHTML = "HAS PERDIDO DEL TÓ";
+                    //document.getElementById("resultado").innerHTML = "<iframe src='https://giphy.com/embed/XJ2LOkwAUN25LQLlvO' frameborder='0' scrolling='no' width='480' height='270' style='position:absolute;top:0;left:0;' allowfullscreen>";
+                    document.getElementById("resultado").innerHTML ="";
+                    vidas--;
+
+            //////////////////////////////////////////////////////////////////////////
+                    let clavePartidas = "partida" + nombreUsuario;
+                    let numPartidas = localStorage.getItem(clavePartidas);
+                    numPartidas++;
+                    localStorage.setItem(clavePartidas, numPartidas.toString());
+            //////////////////////////////////////////////////////////////////////////
+
+                    document.getElementById("juegaotravez").innerHTML = "¿VOLVER A JUGAR? PINCHA EN EL GIF";
+                    //document.getElementById("resultado").innerHTML = "<a title='Vuelve a jugar' href='file:///Users/tardes/alumno/juegoadivina/juego.html'><img src='https://s.libertaddigital.com/2017/02/16/1920/1080/fit/belen-esteban.jpg' width='480' height='270' alt='Vuelve a jugar' /></a>";
+                    document.getElementById("resultado").innerHTML = "<a title='Vuelve a jugar' href='file:///Users/tardes/alumno/juegoadivina/juego.html'><img src='giphy.gif' width='480' height='270' alt='Vuelve a jugar' /></a>";
+
+                    document.getElementById("boton").disabled = true;
+
+                    
+
+                } else {
+                    document.getElementById("resultado").innerHTML = "<iframe src='https://giphy.com/embed/KWhbSfPKYYaDrCB8Ou' frameborder='0' scrolling='no' width='480' height='270' style='position:absolute;top:0;left:0;' allowfullscreen>";
+                    vidas--;
+                }
+               
+                //aleatorio = calculaAleatorio();
+                //window.alert("el numero aleatorio es " + aleatorio);
+                
+                document.getElementById("vidas").innerHTML = vidas;
+                
+
+            }
+            //}
+        }
+
+
+    </script>
+</head>
+
+<body>
+
+    <p>
+        <label>INTRODUCE UN NUMERO ALEATORIO DEL 1 AL 100</label>
+    </p>
+    <p>
+        <label id="nombreUsuario"></label><label>TE QUEDAN </label><label id="vidas"></label><label> VIDAS Y LLEVAS </label>
+        <label id="partidas"></label><label> PARTIDAS</label>
+    </p>
+    <p>
+        <a href="file:///Users/tardes/alumno/juegoadivina/inicio.html">¿QUIERES CAMBIAR DE USUARIO?</a>
+    </p>
+    
+    <p>
+        <input name="numero" id="numero" type="number" placeholder="NUMERO">
+    </p>
+    <p>
+        <input type="button" value="Enviar" id="boton"><br>
+    </p>
+    <label id="ganar"></label>
+    <p>
+        <label id="hasperdido"></label>
+    </p>
+    <label id="juegaotravez"></label>
+    <div style='position:relative; padding-bottom:calc(70.45% + 44px)' id="resultado"></iframe></div>
+   
+    
+        
+</body>
+
+</html>

@@ -22,7 +22,7 @@
     <script language="javascript">
 
         /**
-         * Función que comprueba si una palabra es capicúa
+         * Función que comprueba si una palabra es capicúa (palíndromo, capicúa es solo para números)
          * 
          * 
          * 
@@ -35,7 +35,7 @@
             var j = cad.length - 1; //tope bucle, 2º indice
 
             while ((i < j) && (bd)) { //bucle que recorre la palabra desde la primera letra y desde la ultima letra para ver si esas letras
-                                    // son iguales (compara ambas letras)
+                // son iguales (compara ambas letras)
                 if (cad.charAt(i) == cad.charAt(j)) { //si la letra del indice es igual que la última letra de la palabra, sigue recorriendola
                     bd = true;
                 } else {
@@ -48,35 +48,35 @@
 
             //lo que hace es mirar si todas las letras de la palabra son iguales desde el principio de la palabra y desde
             //el final, es decir, si una palabra es capicua, si es así devuelve true
-   console.log ("bd = " + bd);
+            console.log("bd = " + bd);
             return bd;
         }
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-         function capicuaEquivalente() {
-             let palabra = document.getElementById("palabra").value;
-             let capicua = true;
-             let j = palabra.length -1;
+        function capicuaEquivalente() {
+            let palabra = document.getElementById("palabra").value;
+            let capicua = true;
+            let j = palabra.length - 1;
 
-             /*SOLUCION CON FOR NORMAL
+            /*SOLUCION CON FOR NORMAL
 
-                for (let i = 0; i < (palabra.length - 1); i++){
+               for (let i = 0; i < (palabra.length - 1); i++){
+               if (palabra.charAt(i) != palabra.charAt(j)) {
+                   capicua = false;
+                   break;
+               }
+               j--;
+            }*/
+            for (let i in palabra) {
                 if (palabra.charAt(i) != palabra.charAt(j)) {
                     capicua = false;
                     break;
                 }
                 j--;
-             }*/
-             for (let i in palabra ) {
-                if (palabra.charAt(i) != palabra.charAt(j)) {
-                    capicua = false;
-                    break;
-                }
-                j--;
-             }
-             console.log ("capicua = " + capicua);
-             return capicua;  
-         }
+            }
+            console.log("capicua = " + capicua);
+            return capicua;
+        }
     </script>
 </head>
 

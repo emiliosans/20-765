@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INICIO</title>
+    <script>
+        //constante con el enlace a la página 2 del juego
+        const PAGINA_JUEGO = "file:///Users/tardes/alumno/juegoadivina/juego.html";
+         window.onload = function () {
+            preparaGuardadoNombre();
+        }
+
+        function preparaGuardadoNombre() {
+            document.getElementById('boton').onclick = function () {
+                //recoge nombre introducido y lo pone en mayusculas
+                let nombre = document.getElementById("nombre").value.toUpperCase();
+                //genera la clave del localStorage para guardar las partidas de ese usuario, formato partidaNOMBRE
+                let clavePartida = "partida" + nombre;
+                //window.alert("nombre partidas usuario " + clavePartida);
+
+                //comprueba si existe ya un localStorage
+                if (localStorage.getItem('nombre') === null) {
+
+                    //si no existe crea el localStorage con el nombre del usuario
+                    localStorage.setItem('nombre', nombre);
+                    //y el numero de partidas jugadas de ese usuario con el formato partidaNOMBRE
+                    localStorage.setItem(clavePartida, "1");
+
+                    //window.alert("PARTIDAS INICIALIZADAS A " + localStorage.getItem(clavePartida));
+                    
+                } else {
+                    //si ya existe localStorage, comprueba si el nombre introducido es el mismo que el del jugador anterior
+                    if (localStorage.getItem('nombre') === nombre) {
+                        //let partida = localStorage.getItem(clavePartida);
+                        //window.alert("YA HAS JUGADO " + localStorage.getItem('nombre') + " " + partida + " PARTIDAS");
+                        
+                        //informa al usuario que ya ha jugado anteriormente y las partidas que le quedan
+                        window.alert("YA HAS JUGADO " + nombre + " " + localStorage.getItem(clavePartida) + " PARTIDAS");
+
+                        //recoge el numero de partidas que ya lleva y suma esta partida a las anteriores
+                        let partidass = localStorage.getItem(clavePartida);
+                        partidass++;
+                        //window.alert("PARTIDAS + 1 = " + partidass )
+
+                        //guarda esta nueva partida en el localStorage de las partidas
+                        localStorage.setItem(clavePartida, partidass.toString());
+                        
+                        //partida = localStorage.getItem('partida' + nombre, nombre);
+                        //window.alert( nombre + " HA JUGADO " + partida + " PARTIDAS");
+                    }
+                    else {
+                        //si es un usuario nuevo, guarda ese usuario en otro localStorage con su nombre
+                        window.alert("ANTES HA JUGADO " + localStorage.getItem('nombre'));
+                        localStorage.setItem('nombre', nombre);
+                        //genera el localStorage de partidas de ese nuevo usuario
+                        localStorage.setItem(clavePartida, "1");
+                    }
+
+                    
+                }
+                location.href=PAGINA_JUEGO;
+                //localStorage.clear();
+            }
+        }
+
+    </script>
+</head>
+
+<body>
+    <p>
+        <label>INTRODUCE TU NOMBRE</label>
+    </p>
+    <input name="nombre" id="nombre" type="text" placeholder="NOMBRE">  
+    <P>
+        <input type="button" name="boton" value="Enviar" id="boton">
+    </P>
+</body>
+</html>
