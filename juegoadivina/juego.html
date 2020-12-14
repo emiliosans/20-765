@@ -18,7 +18,13 @@
 
         tanto para el acierto como para el fallo, mostrar gif gracioso
 
+        __________________________________________________________________
 
+        MOSTRAR NÚMEROS JUGADOS POR EL USUARIO
+
+        __________________________________________________________________
+
+        BBDD con registro partidas
     -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,18 +33,28 @@
         let vidas;
         let aleatorio;
         let nombreUsuario;
+        let numerosJugados;
         window.onload = function () {
+            //VARIABLES GLOBALES: numero de vidas, el numero generado aleatoriamente y el nombre del usuario que esta jugando
             vidas = 5;
             aleatorio = calculaAleatorio();
+            numerosJugados = [];
+
             window.alert("el numero aleatorio es " + aleatorio);
+            //recoge el nombre de usuario que se guarda en la pagina anterior
             nombreUsuario = localStorage.getItem('nombre');
+
+            compruebaSiVuelveAJugar();
             //window.alert("el nombre del usuario es " + nombreUsuario);
+            //muestra por pantalla el numero de vidas y el nombre del usuario
             document.getElementById("nombreUsuario").innerHTML = nombreUsuario + " ";
             document.getElementById("vidas").innerHTML = vidas;
-
+            //genera el nombre de la clave del localStorage del numero de partidas de ese usuario
             let clavePartidas = "partida" + nombreUsuario;
+            //recoge el numero de la partida que esta jugando el usuario y lo muestra
             document.getElementById("partidas").innerHTML = localStorage.getItem(clavePartidas);
-
+            /*let prueba = getParameterByName('prueba');
+            window.alert("PARAMETRO SACADO DE LA URL = " + prueba);*/
             preparaResultado();
         }
         //si una funcion la llamas con su nombre + parentesis, el interprete considera q estas haciendo una llamada a esa funcion
@@ -47,63 +63,75 @@
      
         function preparaResultado() {
             document.getElementById('boton').onclick = function () {
+                //recoge el numero introducido por el usuario
                 let numero = document.getElementById("numero").value;
-                //let aleatorio = calculaAleatorio();
+                
+                numerosJugados.push(numero);
+                mostrarNumerosJugados (numerosJugados);
+
+                //llama a la funcion que va a realizar las acciones del juego
                 calculaResultado(numero);
             }
         }
 
         function calculaAleatorio() {
-            //calcular numero aleatorio entre 1 y 100:
+            //calcula numero aleatorio entre 1 y 100:
             return Math.floor(Math.random() * 100) + 1;
         }
-
-        /*function restaVida(vida) {
-            if (vida > 0){
-                vida--;
-            }
-        }*/
        
         function calculaResultado(numeroUsuario) {
+           
 
-            //if (vida != 5) {  
-            //let vidas = document.getElementById("vidas").innerHTML;
-            //window.alert("numero de vidas " + vidas);
+            
             if (numeroUsuario == aleatorio) {
+                /*
+                Si el número introducido por el usuario es igual al número generado aleatoriamente
+                se muestra un gif indicando que ha ganado la partida
+            
+                */
                 document.getElementById("ganar").innerHTML = "HAS GANADO";
                 document.getElementById("resultado").innerHTML = "<iframe src='https://giphy.com/embed/Y3qdARVjj9esNGLEAp' frameborder='0' scrolling='no' width='480' height='270' style='position:absolute;top:0;left:0;' allowfullscreen>";
                 document.getElementById("numero").disabled=true;
             } else {
-               
+               /*
+                    Si no lo ha acertado, se da una pista indicando si el número introducido es menor al aleatorio o mayor
+               */
                 if (numeroUsuario < aleatorio) {
                     document.getElementById("ganar").innerHTML = "HAS PERDIDO EL NUMERO ALEATORIO ES MAYOR";
                 } else {
                     document.getElementById("ganar").innerHTML = "HAS PERDIDO EL NUMERO ALEATORIO ES MENOR";
                 }
-
+                
+                //cuando llega al límite de intentos se indica que ha perdido con el gif correspondiente
                 if ((vidas == 1) && (vidas > 0)) {
                     document.getElementById("hasperdido").innerHTML = "HAS PERDIDO DEL TÓ";
                     document.getElementById("cambiousuario").innerHTML="<a href='file:///Users/tardes/alumno/juegoadivina/inicio.html'>¿QUIERES CAMBIAR DE USUARIO?</a>";
                     //document.getElementById("resultado").innerHTML = "<iframe src='https://giphy.com/embed/XJ2LOkwAUN25LQLlvO' frameborder='0' scrolling='no' width='480' height='270' style='position:absolute;top:0;left:0;' allowfullscreen>";
                     document.getElementById("resultado").innerHTML ="";
                     vidas--;
-
-            //////////////////////////////////////////////////////////////////////////
-                    let clavePartidas = "partida" + nombreUsuario;
-                    let numPartidas = localStorage.getItem(clavePartidas);
-                    numPartidas++;
-                    localStorage.setItem(clavePartidas, numPartidas.toString());
-            //////////////////////////////////////////////////////////////////////////
-
+                     //////////////////////////////////////////////////////////////////////////
+                    /*
+                        suma una partida más
+                    */
+                        
+                    //let clavePartidas = "partida" + nombreUsuario;
+                    //let numPartidas = localStorage.getItem(clavePartidas);
+                    //numPartidas++;
+                    //localStorage.setItem(clavePartidas, numPartidas.toString());
+                    //////////////////////////////////////////////////////////////////////////
+            
+                    // indica con un gif si quiere volver a jugar otra vez
                     document.getElementById("juegaotravez").innerHTML = "¿VOLVER A JUGAR? PINCHA EN EL GIF";
                     //document.getElementById("resultado").innerHTML = "<a title='Vuelve a jugar' href='file:///Users/tardes/alumno/juegoadivina/juego.html'><img src='https://s.libertaddigital.com/2017/02/16/1920/1080/fit/belen-esteban.jpg' width='480' height='270' alt='Vuelve a jugar' /></a>";
-                    document.getElementById("resultado").innerHTML = "<a title='Vuelve a jugar' href='file:///Users/tardes/alumno/juegoadivina/juego.html'><img src='giphy.gif' width='480' height='270' alt='Vuelve a jugar' /></a>";
-
+                    document.getElementById("resultado").innerHTML = "<a title='Vuelve a jugar' href='file:///Users/tardes/alumno/juegoadivina/juego.html?nombre=" + nombreUsuario + "'><img src='giphy.gif' width='480' height='270' alt='Vuelve a jugar' /></a>";
+                   
+                    //al finalizar el numero de vidas se deshabilita el botón para que no pueda seguir jugando
                     document.getElementById("boton").disabled = true;
 
                     
 
                 } else {
+                    //si no ha gastado todas las vidas pero ha fallado, se muestra el gif correspondiente
                     document.getElementById("resultado").innerHTML = "<iframe src='https://giphy.com/embed/KWhbSfPKYYaDrCB8Ou' frameborder='0' scrolling='no' width='480' height='270' style='position:absolute;top:0;left:0;' allowfullscreen>";
                     vidas--;
                 }
@@ -111,12 +139,36 @@
                 //aleatorio = calculaAleatorio();
                 //window.alert("el numero aleatorio es " + aleatorio);
                 
+                //muestra las vidas que le quedan
                 document.getElementById("vidas").innerHTML = vidas;
                 
 
             }
             //}
         }
+
+        function mostrarNumerosJugados (playedNumbers) {
+                let muestraInner = " ";
+                for (let num of playedNumbers) {
+                    muestraInner = muestraInner + " " + num; 
+
+                }
+                //document.getElementById('numerosJugados').innerHTML = playedNumbers; MUESRA EL ARRAY DIRECTAMENTE SIN RECORRERLO
+                document.getElementById('numerosJugados').innerHTML = muestraInner;
+        }
+
+        function compruebaSiVuelveAJugar () {
+            let url = location.href;
+            if (url.includes("nombre=" + nombreUsuario)){
+                    let clavePartidas = "partida" + nombreUsuario;
+                    let numPartidas = localStorage.getItem(clavePartidas);
+                    numPartidas++;
+                    localStorage.setItem(clavePartidas, numPartidas.toString());
+
+            }
+
+        }
+
 
 
     </script>
@@ -140,6 +192,9 @@
     </p>
     <p>
         <input type="button" value="Enviar" id="boton"><br>
+    </p>
+    <p>
+        <label>NÚMEROS JUGADOS: </label><label id="numerosJugados"></label>
     </p>
     <label id="ganar"></label>
     <p>
