@@ -25,11 +25,33 @@
         __________________________________________________________________
 
         BBDD con registro partidas
+
+        __________________________________________________________________
+
+        clase partida 
+        atributos: nombre usuario, intentos, numero partida.
+        metodo: mostrarPartida(); que muestra la info (los atributos) de la partida
+        al terminar la partida crear un objeto partida que muestre el nombre y los intentos
+
     -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ACIERTA EL NÚMERO ALEATORIO</title>
     <script>
+
+        class Partida {
+            constructor (nombre, numIntentos)
+            {
+                this.nombre = nombre;
+                this.numIntentos = numIntentos;
+            }
+
+            mostrarPartida() 
+            {
+                window.alert("Partida terminada: " + this.nombre + " llevas " + this.numIntentos + " intentos.");
+            }
+        }
+
         let vidas;
         let aleatorio;
         let nombreUsuario;
@@ -66,11 +88,17 @@
                 //recoge el numero introducido por el usuario
                 let numero = document.getElementById("numero").value;
                 
+                //agrega el numero introducido por el usuario al array de números jugados
                 numerosJugados.push(numero);
+
+                //muestra todos los números del array que ha ido jugando el usuario
                 mostrarNumerosJugados (numerosJugados);
 
                 //llama a la funcion que va a realizar las acciones del juego
                 calculaResultado(numero);
+
+                //llama a la función que crea un objeto partida y llama al método del propio objeto que muestra los intentos que lleva el usuario
+                muestraPartida(numerosJugados);
             }
         }
 
@@ -92,6 +120,8 @@
                 document.getElementById("ganar").innerHTML = "HAS GANADO";
                 document.getElementById("resultado").innerHTML = "<iframe src='https://giphy.com/embed/Y3qdARVjj9esNGLEAp' frameborder='0' scrolling='no' width='480' height='270' style='position:absolute;top:0;left:0;' allowfullscreen>";
                 document.getElementById("numero").disabled=true;
+
+                
             } else {
                /*
                     Si no lo ha acertado, se da una pista indicando si el número introducido es menor al aleatorio o mayor
@@ -127,13 +157,14 @@
                    
                     //al finalizar el numero de vidas se deshabilita el botón para que no pueda seguir jugando
                     document.getElementById("boton").disabled = true;
-
+                    
                     
 
                 } else {
                     //si no ha gastado todas las vidas pero ha fallado, se muestra el gif correspondiente
                     document.getElementById("resultado").innerHTML = "<iframe src='https://giphy.com/embed/KWhbSfPKYYaDrCB8Ou' frameborder='0' scrolling='no' width='480' height='270' style='position:absolute;top:0;left:0;' allowfullscreen>";
                     vidas--;
+                    
                 }
                
                 //aleatorio = calculaAleatorio();
@@ -145,6 +176,7 @@
 
             }
             //}
+            
         }
 
         function mostrarNumerosJugados (playedNumbers) {
@@ -167,6 +199,14 @@
 
             }
 
+        }
+
+        //funcion que crea un objeto partida y llama al metodo mostrarPartida
+        function muestraPartida(playdNumbers) 
+        {
+            //let numIntentos = playdNumbers.length;
+            let intentos = new Partida (nombreUsuario,playdNumbers.length);
+            intentos.mostrarPartida();
         }
 
 
@@ -200,10 +240,8 @@
     <p>
         <label id="hasperdido"></label>
     </p>
-    <label id="juegaotravez"></label>
+    <label id="juegaotravez"></label><br>
     <div style='position:relative; padding-bottom:calc(70.45% + 44px)' id="resultado"></iframe></div>
-   
-    
         
 </body>
 
