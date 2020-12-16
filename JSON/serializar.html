@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serializar JSON</title>
+    <script>
+     class Partida {
+            constructor (nombre, numIntentos)
+            {
+                this.nombre = nombre;
+                this.intentos = numIntentos;
+            }
+
+            mostrarPartida() 
+            {
+                window.alert("Partida terminada: " + this.nombre + " llevas " + this.numIntentos + " intentos.");
+            }
+        }
+
+        let partida = new Partida ("JESS",5);
+        //el metodo stringify convierte el contenido del objeto en una cadena
+        let string_partida = JSON.stringify(partida); //aqui serializamos
+        console.log(string_partida);
+        
+        //el metodo parse convierte el contenido de una cadena en un objeto
+        let partida2 = JSON.parse(string_partida); //aqui desserializamos
+        
+
+
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

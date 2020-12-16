@@ -33,6 +33,8 @@
         metodo: mostrarPartida(); que muestra la info (los atributos) de la partida
         al terminar la partida crear un objeto partida que muestre el nombre y los intentos
 
+       
+
     -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -48,7 +50,28 @@
 
             mostrarPartida() 
             {
-                window.alert("Partida terminada: " + this.nombre + " llevas " + this.numIntentos + " intentos.");
+                console.log("Partida terminada: " + this.nombre + " llevas " + this.numIntentos + " intentos.");
+            }
+
+            guardarPartida()
+            {
+                /*
+                let string_partida = JSON.stringify(this);
+                localStorage.setItem("JSONpartida",string_partida);*/
+
+                let JSONpartidas = [];
+                if (localStorage.getItem('JSONpartida') === null) {
+                    JSONpartidas.push(this);
+                    let string_partida = JSON.stringify(JSONpartidas);
+                    localStorage.setItem("JSONpartida",string_partida);
+                } else {
+                    let string_partida = localStorage.getItem("JSONpartida");
+                    JSONpartidas = JSON.parse(string_partida);
+                    JSONpartidas.push(this);
+                    string_partida = JSON.stringify(JSONpartidas);
+                    localStorage.setItem("JSONpartida",string_partida);
+                }
+
             }
         }
 
@@ -98,7 +121,11 @@
                 calculaResultado(numero);
 
                 //llama a la función que crea un objeto partida y llama al método del propio objeto que muestra los intentos que lleva el usuario
-                muestraPartida(numerosJugados);
+                //muestraPartida(numerosJugados);
+
+                let objetoPartida = new Partida (nombreUsuario,numerosJugados.length);
+                objetoPartida.mostrarPartida();
+                objetoPartida.guardarPartida();
             }
         }
 
@@ -204,8 +231,52 @@
         //funcion que crea un objeto partida y llama al metodo mostrarPartida
         function muestraPartida(playdNumbers) 
         {
+            
             //let numIntentos = playdNumbers.length;
             let intentos = new Partida (nombreUsuario,playdNumbers.length);
+
+            //pasamos el objeto a texto JSON
+            let string_partida = JSON.stringify(intentos);
+            /*
+            var JSONpartidas = { 
+                JSONpartida : [ ]
+            };
+            */
+            
+            
+
+            
+
+            
+
+            //console.log("JSON CREADO: " + string_partida);
+
+            //guardamos el texto JSON en localStorage
+            
+
+            //saco de la memoria el texto JSON y se transforma a objeto de nuevo
+            
+            
+
+            //console.log("JSON SACADO DE LA MEMORIA: " + texto_JSON);
+            /*
+            for (objetoJSON of recogeArrayPartidas) 
+
+            {
+                let objeto = JSON.parse(objetoJSON);
+                console.log("Nombre del objeto= " + objetoJSON.nombre);
+                console.log("Numero intentos del objeto= " + objetoJSON.numIntentos);
+            }*/
+            
+            //let objeto = JSON.parse(texto_JSON);
+
+            /*console.log("INFO PARTIDA CON EL OBJETO: " );
+            console.log("Nombre del objeto= " + objeto.nombre);
+            console.log("Numero intentos del objeto= " + objeto.numIntentos);*/
+           
+
+            //muestro la partida con un metodo del objeto
+            
             intentos.mostrarPartida();
         }
 
@@ -232,6 +303,9 @@
     </p>
     <p>
         <input type="button" value="Enviar" id="boton"><br>
+    </p>
+    <p>
+        <a href="resultados.html">TABLA RANKINGS</a>
     </p>
     <p>
         <label>NÚMEROS JUGADOS: </label><label id="numerosJugados"></label>

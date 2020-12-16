@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RANKING RESULTADOS</title>
+    <script>
+        class Partida {
+            constructor(nombre, numIntentos) {
+                this.nombre = nombre;
+                this.numIntentos = numIntentos;
+            }
+
+            mostrarPartida() {
+                console.log("Partida terminada: " + this.nombre + " llevas " + this.numIntentos + " intentos.");
+            }
+
+            guardarPartida() {
+                /*
+                let string_partida = JSON.stringify(this);
+                localStorage.setItem("JSONpartida",string_partida);*/
+
+                let JSONpartidas = [];
+                if (localStorage.getItem('JSONpartida') === null) {
+                    JSONpartidas.push(this);
+                    let string_partida = JSON.stringify(JSONpartidas);
+                    localStorage.setItem("JSONpartida", string_partida);
+                } else {
+                    let string_partida = localStorage.getItem("JSONpartida");
+                    JSONpartidas = JSON.parse(string_partida);
+                    JSONpartidas.push(this);
+                    string_partida = JSON.stringify(JSONpartidas);
+                    localStorage.setItem("JSONpartida", string_partida);
+                }
+
+            }
+        }
+
+        //let objetoPartida = new Partida (nombreUsuario,numerosJugados.length);
+
+        window.onload = function () {
+            recogeJSON();
+        }
+
+        function recogeJSON() {
+            let JSONpartidas = [];
+            if (localStorage.getItem('JSONpartida') === null) {
+                window.alert("NO HAY PARTIDAS GUARDADAS");
+            } else {
+                let string_partida = localStorage.getItem("JSONpartida");
+                JSONpartidas = JSON.parse(string_partida);
+                genera_tabla(JSONpartidas);
+                creaTablaResultados(JSONpartidas);
+            }
+        }
+
+        function creaTablaResultados(partidas) {
+            // Obtener la referencia del elemento body
+            var body = document.getElementsByTagName("body")[0];
+
+            // Crea un elemento <table> y un elemento <tbody>
+            var tabla = document.createElement("table");
+
+            var tblBody = document.createElement("tbody");
+
+            creaTituloTabla();
+            for (datosPartida of partidas) {
+
+
+
+                var hilera = document.createElement("tr");
+
+                for (var j = 0; j < 2; j++) {
+                    // Crea un elemento <td> y un nodo de texto, haz que el nodo de
+                    // texto sea el contenido de <td>, ubica el elemento <td> al final
+                    // de la hilera de la tabla
+                    var celda = document.createElement("td");
+                    var textoCelda = "";
+                    if (j == 0) {
+                        textoCelda = document.createTextNode(datosPartida.nombre);
+                    } else {
+                        textoCelda = document.createTextNode(datosPartida.numIntentos);
+                    }
+                    celda.appendChild(textoCelda);
+                    hilera.appendChild(celda);
+                }
+
+                // agrega la hilera al final de la tabla (al final del elemento tblbody)
+                tblBody.appendChild(hilera);
+            }
+        }
+
+        function creaTituloTabla() {
+            for (var i = 0; i < 2; i++) {
+            var hilera = document.createElement("tr");
+
+            for (var j = 0; j < 2; j++) {
+                // Crea un elemento <td> y un nodo de texto, haz que el nodo de
+                // texto sea el contenido de <td>, ubica el elemento <td> al final
+                // de la hilera de la tabla
+                var celda = document.createElement("td");
+                var textoCelda = "";
+                if (j == 0) {
+                    textoCelda = "NOMBRE";
+                } else {
+                    textoCelda = "INTENTOS";
+                }
+                celda.appendChild(textoCelda);
+                hilera.appendChild(celda);
+            }
+
+            // agrega la hilera al final de la tabla (al final del elemento tblbody)
+            tblBody.appendChild(hilera);
+        }
+          // posiciona el <tbody> debajo del elemento <table>
+            tabla.appendChild(tblBody);
+            // appends <table> into <body>
+            body.appendChild(tabla);
+            // modifica el atributo "border" de la tabla y lo fija a "2";
+        }
+
+
+        function genera_tabla(partidas) {
+            // Obtener la referencia del elemento body
+            var body = document.getElementsByTagName("body")[0];
+
+            // Crea un elemento <table> y un elemento <tbody>
+            var tabla = document.createElement("table");
+            var tblBody = document.createElement("tbody");
+            //creaTituloTabla();
+
+
+
+            
+            for (datosPartida of partidas) {
+
+
+                // Crea las celdas
+                for (var i = 0; i < 2; i++) {
+                    // Crea las hileras de la tabla
+                    var hilera = document.createElement("tr");
+
+                    for (var j = 0; j < 2; j++) {
+                        // Crea un elemento <td> y un nodo de texto, haz que el nodo de
+                        // texto sea el contenido de <td>, ubica el elemento <td> al final
+                        // de la hilera de la tabla
+
+                        var celda = document.createElement("td");
+                        var textoCelda = " ";
+                        if (j == 0) {
+                            textoCelda = document.createTextNode(datosPartida.nombre);
+                        } else {
+                            textoCelda = document.createTextNode(datosPartida.numIntentos);
+                        }
+                        
+                        celda.appendChild(textoCelda);
+                        hilera.appendChild(celda);
+                    }
+
+                    // agrega la hilera al final de la tabla (al final del elemento tblbody)
+                    tblBody.appendChild(hilera);
+                }
+            }
+
+            // posiciona el <tbody> debajo del elemento <table>
+            tabla.appendChild(tblBody);
+            // appends <table> into <body>
+            body.appendChild(tabla);
+            // modifica el atributo "border" de la tabla y lo fija a "2";
+            tabla.setAttribute("border", "2");
+        }
+
+    </script>
+</head>
+
+<body>
+    <!-- <div id="tabla">
+        <table border="2">
+            <tbody>
+                <tr>
+                    <td>NOMBRE</td>
+                    <td>INTENTOS</td>
+                </tr>
+
+            </tbody>
+        </table>
+
+
+    </div> -->
+</body>
+
+</html>
