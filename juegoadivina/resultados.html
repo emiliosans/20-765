@@ -17,9 +17,6 @@
             }
 
             guardarPartida() {
-                /*
-                let string_partida = JSON.stringify(this);
-                localStorage.setItem("JSONpartida",string_partida);*/
 
                 let JSONpartidas = [];
                 if (localStorage.getItem('JSONpartida') === null) {
@@ -37,157 +34,128 @@
             }
         }
 
-        //let objetoPartida = new Partida (nombreUsuario,numerosJugados.length);
+        let JSONpartidas = [];
 
         window.onload = function () {
             recogeJSON();
         }
 
         function recogeJSON() {
-            let JSONpartidas = [];
+
             if (localStorage.getItem('JSONpartida') === null) {
                 window.alert("NO HAY PARTIDAS GUARDADAS");
             } else {
                 let string_partida = localStorage.getItem("JSONpartida");
                 JSONpartidas = JSON.parse(string_partida);
                 genera_tabla(JSONpartidas);
-                creaTablaResultados(JSONpartidas);
+                
             }
         }
 
-        function creaTablaResultados(partidas) {
-            // Obtener la referencia del elemento body
-            var body = document.getElementsByTagName("body")[0];
-
-            // Crea un elemento <table> y un elemento <tbody>
-            var tabla = document.createElement("table");
-
-            var tblBody = document.createElement("tbody");
-
-            creaTituloTabla();
-            for (datosPartida of partidas) {
-
-
-
-                var hilera = document.createElement("tr");
-
-                for (var j = 0; j < 2; j++) {
-                    // Crea un elemento <td> y un nodo de texto, haz que el nodo de
-                    // texto sea el contenido de <td>, ubica el elemento <td> al final
-                    // de la hilera de la tabla
-                    var celda = document.createElement("td");
-                    var textoCelda = "";
-                    if (j == 0) {
-                        textoCelda = document.createTextNode(datosPartida.nombre);
-                    } else {
-                        textoCelda = document.createTextNode(datosPartida.numIntentos);
-                    }
-                    celda.appendChild(textoCelda);
-                    hilera.appendChild(celda);
-                }
-
-                // agrega la hilera al final de la tabla (al final del elemento tblbody)
-                tblBody.appendChild(hilera);
-            }
-        }
-
-        function creaTituloTabla() {
-            for (var i = 0; i < 2; i++) {
-            var hilera = document.createElement("tr");
-
-            for (var j = 0; j < 2; j++) {
-                // Crea un elemento <td> y un nodo de texto, haz que el nodo de
-                // texto sea el contenido de <td>, ubica el elemento <td> al final
-                // de la hilera de la tabla
-                var celda = document.createElement("td");
-                var textoCelda = "";
-                if (j == 0) {
-                    textoCelda = "NOMBRE";
-                } else {
-                    textoCelda = "INTENTOS";
-                }
-                celda.appendChild(textoCelda);
-                hilera.appendChild(celda);
-            }
-
-            // agrega la hilera al final de la tabla (al final del elemento tblbody)
-            tblBody.appendChild(hilera);
-        }
-          // posiciona el <tbody> debajo del elemento <table>
-            tabla.appendChild(tblBody);
-            // appends <table> into <body>
-            body.appendChild(tabla);
-            // modifica el atributo "border" de la tabla y lo fija a "2";
-        }
-
-
+        //se crea la tabla toda en javascript porque la página primero lee el JS y despues el HTML
+        //si lo quiero agregar a una tabla ya hecha en html, va a dar error xq cuando carga el JS esa tabla es null xq no ha creado aun el HTML
+        //solucion: hacer toda la tabla en el JS o tener una parte de la tabla en HTML y tener el script al final del todo del HTML
         function genera_tabla(partidas) {
             // Obtener la referencia del elemento body
             var body = document.getElementsByTagName("body")[0];
-
             // Crea un elemento <table> y un elemento <tbody>
             var tabla = document.createElement("table");
             var tblBody = document.createElement("tbody");
             //creaTituloTabla();
-
-
-
-            
             for (datosPartida of partidas) {
-
-
                 // Crea las celdas
-                for (var i = 0; i < 2; i++) {
+                for (var i = 0; i < 1; i++) {
                     // Crea las hileras de la tabla
                     var hilera = document.createElement("tr");
-
                     for (var j = 0; j < 2; j++) {
                         // Crea un elemento <td> y un nodo de texto, haz que el nodo de
                         // texto sea el contenido de <td>, ubica el elemento <td> al final
                         // de la hilera de la tabla
 
                         var celda = document.createElement("td");
+
                         var textoCelda = " ";
                         if (j == 0) {
                             textoCelda = document.createTextNode(datosPartida.nombre);
+                            celda.setAttribute("name", "nombre");
                         } else {
                             textoCelda = document.createTextNode(datosPartida.numIntentos);
+                            celda.setAttribute("name", "intentos");
                         }
-                        
+
                         celda.appendChild(textoCelda);
+                        celda.setAttribute("width", "75");
+                        celda.setAttribute("height", "20");
                         hilera.appendChild(celda);
                     }
-
                     // agrega la hilera al final de la tabla (al final del elemento tblbody)
                     tblBody.appendChild(hilera);
                 }
             }
-
             // posiciona el <tbody> debajo del elemento <table>
+            tabla.setAttribute("id", "tabla");
             tabla.appendChild(tblBody);
             // appends <table> into <body>
             body.appendChild(tabla);
             // modifica el atributo "border" de la tabla y lo fija a "2";
             tabla.setAttribute("border", "2");
+            tabla.setAttribute("width", "150");
+            tabla.setAttribute("height", "20");
         }
+
+        function ordenaPorNombre() {
+            borrarTabla();
+            let ordenaPorNombre = JSONpartidas;
+            ordenaPorNombre.sort(function compare(a, b) {
+                if (a.nombre > b.nombre) {
+                return 1;
+            }
+            if (a.nombre < b.nombre) {
+                return -1;
+            }
+            // a debe ser igual b
+            return 0;
+            });
+            genera_tabla(ordenaPorNombre);
+        }
+
+
+        function ordenaPorIntentos() {
+            borrarTabla();
+            let ordenaPorIntentos = JSONpartidas;
+            ordenaPorIntentos.sort(function compare(a, b) {
+                if (a.numIntentos > b.numIntentos) {
+                return 1;
+            }
+            if (a.numIntentos < b.numIntentos) {
+                return -1;
+            }
+            // a debe ser igual b
+            return 0;
+            });
+            genera_tabla(ordenaPorIntentos);
+        }
+
+        function borrarTabla() {
+            let tabla = document.getElementById("tabla");
+            tabla.remove();
+            //tabla.innerHTML = " ";
+        }
+
+
 
     </script>
 </head>
 
 <body>
-    <!-- <div id="tabla">
-        <table border="2">
-            <tbody>
-                <tr>
-                    <td>NOMBRE</td>
-                    <td>INTENTOS</td>
-                </tr>
-
-            </tbody>
-        </table>
-
-
-    </div> -->
+    <table border="2" width="70" height="20">
+        <tbody>
+            <tr>
+                <td><a href="#" onclick=ordenaPorNombre()>NOMBRE</a></td>
+                <td><a href="#" onclick=ordenaPorIntentos()>INTENTOS</a></td>
+            </tr>
+        </tbody>
+    </table>
 </body>
 
 </html>
