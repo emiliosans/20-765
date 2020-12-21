@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <script>
 
+        onload = calcular;
         const URL_ITUNES = "https://itunes.apple.com/search/?media=music&term=";
         let artista;
         //TODO VALIDAR LA ENTRADA
@@ -60,9 +61,8 @@
                         letra_rx = JSON.parse(letra_rx);
                         let cancion = null;
                         for (let cantante of letra_rx.results) {
-                            if (cantante.artistName.toLowerCase().includes(artista.toLowerCase()) ) {
-                                cancion = cantante;
-                                break;
+                            if (cantante.artistName.toLowerCase().includes(artista.toLowerCase())) {
+                                mostrarArtista(cantante);
                             }
                         }
                         document.getElementById("txtDisco").value = cancion.collectionCensoredName;
@@ -98,19 +98,42 @@
             }
         }
 
-        function muestraResultados () {
+        function mostrarArtista(cantante) {
+            //TODO CREAR 2 TDS --createElement
+            let body = document.getElementById("body");
+            let fieldsetArtista = document.createElement("fieldset");
+            fieldsetArtista.setAttribute("style","width:400px");
+            let nombreLegend = document.createElement("legend");
+            nombreLegend.innerHTML = cantante.artistName;
+            fieldsetArtista.appendChild(nombreLegend);
 
+            let labelCancion = document.createElement("label");
+            labelCancion.innerHTML = "CANCION";
+            let tdnombre = document.createElement("td");
+            let tdintentos = document.createElement("td");
+            //METERLE EN LOS INNERHTML EL NOMBRE E INTENTOS
+            tdnombre.innerHTML = partida.nombre;
+            tdintentos.innerHTML = partida.intentos;
+            //CREAR UN TR
+            let nuevafila = document.createElement("tr");
+            //AÑADIR LOS TDS AL TR --appendChild
+            nuevafila.appendChild(tdnombre);
+            nuevafila.appendChild(tdintentos);
+            //AÑADIR EL TR A LA TABLA
+            body.appendChild(fieldsetArtista);
+            tabla.appendChild(nuevafila);
         }
 
     </script>
 </head>
 
-<body>
+<body id="body">
+    <label>Introduce tu Artista favorito</label><br />
+    <input type="text" id="txtArtista" /><br />
+    <input onclick="calcular()" type="button" id="btnResultado" value="BUSCAR" /><br />
     <fieldset style="width:400px">
         <legend>API ITUNES JSON</legend>
-        <label>Introduce tu Artista favorito</label><br />
-        <input type="text" id="txtArtista" /><br />
-        <input onclick="calcular()" type="button" id="btnResultado" value="BUSCAR" /><br />
+
         <label>CANCION</label><br />
         <input type="text" id="txtCancion" /><br><br>
         <label>DISCO</label><br />
@@ -120,6 +143,15 @@
         <label>PREVIEW CANCION</label><br />
         <span id="txtPreview"></span><br><br>
     </fieldset>
+
+
+    <table id="tabla">
+        <tr>
+            <th onclick="sortPorNombre()">NOMBRE</th>
+
+        </tr>
+
+    </table>
 </body>
 
 </html>
