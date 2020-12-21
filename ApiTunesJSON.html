@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>API ITUNES JSON</title>
+    <meta charset="UTF-8">
+    <script>
+
+        const URL_ITUNES = "https://itunes.apple.com/search/?media=music&term=";
+        let artista;
+        //TODO VALIDAR LA ENTRADA
+        var xhr = new XMLHttpRequest();
+        function calcularURL(artista) {
+            let url_completa = '';
+
+            console.log("artista iTunes");
+            url_completa = URL_ITUNES + artista;
+
+            return url_completa;
+        }
+
+        function calcular() {
+            artista = document.getElementById("txtArtista").value;
+
+            //VALIDA CON EXPRESION REGULAR SI INTRODUCE LETRAS U OTROS CARACTERES Y DE 2 A 254 CARACTERES
+            let caracteres = "[a-zA-Z ]{2,254}";
+            if (artista.match(caracteres)) {
+                console.log("Artista válido");
+                //LLAMAR AL SERVIDOR, CON ESE ARTISTA
+                let url = calcularURL(artista);
+                console.log("URL = " + url);
+                xhr.open("GET", url);
+                xhr.onreadystatechange = recibirArtista;
+                xhr.send();
+
+                //si ha introducido otros caracteres en lugar de solo letras, muestra mensaje de error
+            } else {
+                window.alert("ARTISTA INVALIDO, INTRODUCE SOLO LETRAS");
+            }
+
+        }
+
+        function recibirArtista() {
+            if (xhr.readyState == 4) {
+                console.log("respuesta rx");
+                /*if (xhr.status == 200) {
+                    console.log("respuesta OK");
+                    let letra_rx = xhr.responseText;
+                    console.log("letra rx = " + letra_rx);
+                    document.getElementById("txtLetra").value = letra_rx;
+                } else {
+                    console.log("COd respuesta " + xhr.status);
+                }*/
+
+                switch (xhr.status) {
+                    case 200:
+                        console.log("respuesta OK");
+                        let letra_rx = xhr.responseText;
+                        console.log("letra rx = " + letra_rx);
+                        letra_rx = JSON.parse(letra_rx);
+                        let cancion = null;
+                        for (let cantante of letra_rx.results) {
+                            if (cantante.artistName.toLowerCase().includes(artista.toLowerCase()) ) {
+                                cancion = cantante;
+                                break;
+                            }
+                        }
+                        document.getElementById("txtDisco").value = cancion.collectionCensoredName;
+                        document.getElementById("txtCancion").value = cancion.trackCensoredName;
+                        document.getElementById("txtPreview").innerHTML = "<iframe src='" + cancion.previewUrl + "'>";
+                        document.getElementById("txtCaratula").innerHTML = "<img src='" + cancion.artworkUrl100 + "'>";
+                        break;
+                    case 400:
+                        console.log("COd respuesta " + xhr.status);
+                        console.log("respuesta INCORRECTA");
+                        window.alert("respuesta INCORRECTA");
+                        //let letra_rx = xhr.responseText;
+                        //console.log("letra rx = " + letra_rx);
+                        //document.getElementById("txtLetra").value = letra_rx;
+                        break;
+                    case 204:
+                        console.log("COd respuesta " + xhr.status);
+                        console.log("NO EXISTE EL ARTISTA");
+                        window.alert("NO EXISTE EL ARTISTA");
+
+                        //let letra_rx = xhr.responseText;
+                        //console.log("letra rx = " + letra_rx);
+                        //document.getElementById("txtLetra").value = letra_rx;
+                        break;
+                    case 500:
+                        console.log("COd respuesta " + xhr.status);
+                        console.log("ERROR DEL SERVIDOR");
+                        window.alert("ERROR DEL SERVIDOR");
+                        break;
+                    default:
+                        console.log("Cod respuesta " + xhr.status);
+                }
+            }
+        }
+
+        function muestraResultados () {
+
+        }
+
+    </script>
+</head>
+
+<body>
+    <fieldset style="width:400px">
+        <legend>API ITUNES JSON</legend>
+        <label>Introduce tu Artista favorito</label><br />
+        <input type="text" id="txtArtista" /><br />
+        <input onclick="calcular()" type="button" id="btnResultado" value="BUSCAR" /><br />
+        <label>CANCION</label><br />
+        <input type="text" id="txtCancion" /><br><br>
+        <label>DISCO</label><br />
+        <input type="text" id="txtDisco" /><br><br>
+        <label>CARÁTULA</label><br />
+        <span id="txtCaratula"></span><br><br>
+        <label>PREVIEW CANCION</label><br />
+        <span id="txtPreview"></span><br><br>
+    </fieldset>
+</body>
+
+</html>
