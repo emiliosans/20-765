@@ -6,24 +6,24 @@
     <meta charset="UTF-8">
     <script>
 
-       window.onload = function () {
+        window.onload = function () {
             calcular;
         }
 
-       // NO FUNCIONA
-       // window.onload = calcular;
+        // NO FUNCIONA
+        // window.onload = calcular;
 
         const URL_ITUNES = "https://itunes.apple.com/search/?media=music&term=";
         let artista;
 
-     
+
         //TODO VALIDAR LA ENTRADA
         var xhr = new XMLHttpRequest();
         function calcularURL(artista) {
             let url_completa = '';
 
             console.log("artista iTunes");
-            url_completa = URL_ITUNES + artista;
+            url_completa = encodeURI(URL_ITUNES + artista);
 
             return url_completa;
         }
@@ -67,12 +67,25 @@
                         let letra_rx = xhr.responseText;
                         console.log("letra rx = " + letra_rx);
                         letra_rx = JSON.parse(letra_rx);
-                        let cancion = null;
-                        for (let cantante of letra_rx.results) {
-                            if (cantante.artistName.toLowerCase().includes(artista.toLowerCase())) {
-                                mostrarArtista(cantante);
+                        //let cancion = null;
+                        if (letra_rx.resultCount == 0) {
+                            window.alert("EL ARTISTA NO EXISTE");
+                            console.log("EL ARTISTA NO EXISTE");
+                        } else {
+                            if (document.getElementById("hook")){
+                                document.getElementById("hook").remove();
+                            }
+                            let body = document.getElementById("body");
+                            let divHook = document.createElement("div");
+                            divHook.setAttribute("id","hook");
+                            body.appendChild(divHook);
+                            for (let cantante of letra_rx.results) {
+                                if (cantante.artistName.toLowerCase().includes(artista.toLowerCase())) {
+                                    mostrarArtista(cantante);
+                                }
                             }
                         }
+
                         /*document.getElementById("txtDisco").value = cancion.collectionCensoredName;
                         document.getElementById("txtCancion").value = cancion.trackCensoredName;
                         document.getElementById("txtPreview").innerHTML = "<iframe src='" + cancion.previewUrl + "'>";
@@ -111,7 +124,7 @@
             let body = document.getElementById("body");
 
             let fieldsetArtista = document.createElement("fieldset");
-            fieldsetArtista.setAttribute("style","width:400px");
+            fieldsetArtista.setAttribute("style", "width:400px");
 
             let nombreLegend = document.createElement("legend");
             nombreLegend.innerHTML = cantante.artistName;
@@ -123,62 +136,65 @@
             let labelCancion = document.createElement("label");
             labelCancion.innerHTML = "CANCION";
             fieldsetArtista.appendChild(labelCancion);
-            
+
             let br1 = document.createElement("br");
             fieldsetArtista.appendChild(br1);
 
             let labelNombreCancion = document.createElement("label");
             labelNombreCancion.innerHTML = cantante.trackCensoredName;
             fieldsetArtista.appendChild(labelNombreCancion);
-            
+
             let br2 = document.createElement("br");
             fieldsetArtista.appendChild(br2);
 
             let labelDisco = document.createElement("label");
             labelDisco.innerHTML = "DISCO";
             fieldsetArtista.appendChild(labelDisco);
-            
+
             let br3 = document.createElement("br");
             fieldsetArtista.appendChild(br3);
 
             let labelNombreDisco = document.createElement("label");
             labelNombreDisco.innerHTML = cantante.collectionCensoredName;
             fieldsetArtista.appendChild(labelNombreDisco);
-            
+
             let br4 = document.createElement("br");
             fieldsetArtista.appendChild(br4);
 
             let labelCaratula = document.createElement("label");
             labelCaratula.innerHTML = "CARÁTULA";
             fieldsetArtista.appendChild(labelCaratula);
-            
+
             let br5 = document.createElement("br");
             fieldsetArtista.appendChild(br5);
 
             let spanCaratula = document.createElement("span");
             spanCaratula.innerHTML = "<img src='" + cantante.artworkUrl100 + "'>";
             fieldsetArtista.appendChild(spanCaratula);
-            
+
             let br6 = document.createElement("br");
             fieldsetArtista.appendChild(br6);
 
             let labelPreview = document.createElement("label");
             labelPreview.innerHTML = "PREVIEW CANCION";
             fieldsetArtista.appendChild(labelPreview);
-            
+
             let br7 = document.createElement("br");
             fieldsetArtista.appendChild(br7);
 
             let spanPreview = document.createElement("span");
             spanPreview.innerHTML = "<iframe src='" + cantante.previewUrl + "'>";
-                //trackViewUrl
+            //trackViewUrl
             //spanPreview.innerHTML = "<iframe src='" + cantante.trackViewUrl + "'>";
             fieldsetArtista.appendChild(spanPreview);
-            
+
             let br8 = document.createElement("br");
             fieldsetArtista.appendChild(br8);
-        
-            body.appendChild(fieldsetArtista);
+
+            let divHook = document.getElementById("hook");
+            
+            divHook.appendChild(fieldsetArtista);
+            body.appendChild(divHook);
         }
 
     </script>
@@ -188,7 +204,7 @@
     <label>Introduce tu Artista favorito</label><br />
     <input type="text" id="txtArtista" /><br />
     <input onclick="calcular()" type="button" id="btnResultado" value="BUSCAR" /><br /><br />
-   <!-- <fieldset style="width:400px">
+    <!-- <fieldset style="width:400px">
         <legend>API ITUNES JSON</legend>
 
         <label>CANCION</label><br />
