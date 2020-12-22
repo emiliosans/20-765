@@ -1,14 +1,11 @@
 [
     {
-      "id": 1,
-      "title": "Post 1"
-    },
-    {
-      "id": 2,
-      "title": "Post 2"
-    },
-    {
-      "id": 3,
-      "title": "Post 3"
+        "dni": {
+            "numero": 70059984,
+            "letra": "Y"
+        },
+        "nombre": "Emilio",
+        "apellidos": "Sanchez Sanchez",
+        "mensaje": "Espero que no tengas mas atascos :S"
     }
   ]
