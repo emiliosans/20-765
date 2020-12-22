@@ -6,9 +6,17 @@
     <meta charset="UTF-8">
     <script>
 
-        onload = calcular;
+       window.onload = function () {
+            calcular;
+        }
+
+       // NO FUNCIONA
+       // window.onload = calcular;
+
         const URL_ITUNES = "https://itunes.apple.com/search/?media=music&term=";
         let artista;
+
+     
         //TODO VALIDAR LA ENTRADA
         var xhr = new XMLHttpRequest();
         function calcularURL(artista) {
@@ -65,10 +73,10 @@
                                 mostrarArtista(cantante);
                             }
                         }
-                        document.getElementById("txtDisco").value = cancion.collectionCensoredName;
+                        /*document.getElementById("txtDisco").value = cancion.collectionCensoredName;
                         document.getElementById("txtCancion").value = cancion.trackCensoredName;
                         document.getElementById("txtPreview").innerHTML = "<iframe src='" + cancion.previewUrl + "'>";
-                        document.getElementById("txtCaratula").innerHTML = "<img src='" + cancion.artworkUrl100 + "'>";
+                        document.getElementById("txtCaratula").innerHTML = "<img src='" + cancion.artworkUrl100 + "'>";*/
                         break;
                     case 400:
                         console.log("COd respuesta " + xhr.status);
@@ -101,27 +109,77 @@
         function mostrarArtista(cantante) {
             //TODO CREAR 2 TDS --createElement
             let body = document.getElementById("body");
+
             let fieldsetArtista = document.createElement("fieldset");
             fieldsetArtista.setAttribute("style","width:400px");
+
             let nombreLegend = document.createElement("legend");
             nombreLegend.innerHTML = cantante.artistName;
             fieldsetArtista.appendChild(nombreLegend);
 
+            let br = document.createElement("br");
+            fieldsetArtista.appendChild(br);
+
             let labelCancion = document.createElement("label");
             labelCancion.innerHTML = "CANCION";
-            let tdnombre = document.createElement("td");
-            let tdintentos = document.createElement("td");
-            //METERLE EN LOS INNERHTML EL NOMBRE E INTENTOS
-            tdnombre.innerHTML = partida.nombre;
-            tdintentos.innerHTML = partida.intentos;
-            //CREAR UN TR
-            let nuevafila = document.createElement("tr");
-            //AÑADIR LOS TDS AL TR --appendChild
-            nuevafila.appendChild(tdnombre);
-            nuevafila.appendChild(tdintentos);
-            //AÑADIR EL TR A LA TABLA
+            fieldsetArtista.appendChild(labelCancion);
+            
+            let br1 = document.createElement("br");
+            fieldsetArtista.appendChild(br1);
+
+            let labelNombreCancion = document.createElement("label");
+            labelNombreCancion.innerHTML = cantante.trackCensoredName;
+            fieldsetArtista.appendChild(labelNombreCancion);
+            
+            let br2 = document.createElement("br");
+            fieldsetArtista.appendChild(br2);
+
+            let labelDisco = document.createElement("label");
+            labelDisco.innerHTML = "DISCO";
+            fieldsetArtista.appendChild(labelDisco);
+            
+            let br3 = document.createElement("br");
+            fieldsetArtista.appendChild(br3);
+
+            let labelNombreDisco = document.createElement("label");
+            labelNombreDisco.innerHTML = cantante.collectionCensoredName;
+            fieldsetArtista.appendChild(labelNombreDisco);
+            
+            let br4 = document.createElement("br");
+            fieldsetArtista.appendChild(br4);
+
+            let labelCaratula = document.createElement("label");
+            labelCaratula.innerHTML = "CARÁTULA";
+            fieldsetArtista.appendChild(labelCaratula);
+            
+            let br5 = document.createElement("br");
+            fieldsetArtista.appendChild(br5);
+
+            let spanCaratula = document.createElement("span");
+            spanCaratula.innerHTML = "<img src='" + cantante.artworkUrl100 + "'>";
+            fieldsetArtista.appendChild(spanCaratula);
+            
+            let br6 = document.createElement("br");
+            fieldsetArtista.appendChild(br6);
+
+            let labelPreview = document.createElement("label");
+            labelPreview.innerHTML = "PREVIEW CANCION";
+            fieldsetArtista.appendChild(labelPreview);
+            
+            let br7 = document.createElement("br");
+            fieldsetArtista.appendChild(br7);
+
+            let spanPreview = document.createElement("span");
+            spanPreview.innerHTML = "<iframe src='" + cantante.previewUrl + "'>";
+                //trackViewUrl
+            //spanPreview.innerHTML = "<iframe src='" + cantante.trackViewUrl + "'>";
+            fieldsetArtista.appendChild(spanPreview);
+            
+            let br8 = document.createElement("br");
+            fieldsetArtista.appendChild(br8);
+        
             body.appendChild(fieldsetArtista);
-            tabla.appendChild(nuevafila);
+           
         }
 
     </script>
@@ -130,8 +188,8 @@
 <body id="body">
     <label>Introduce tu Artista favorito</label><br />
     <input type="text" id="txtArtista" /><br />
-    <input onclick="calcular()" type="button" id="btnResultado" value="BUSCAR" /><br />
-    <fieldset style="width:400px">
+    <input onclick="calcular()" type="button" id="btnResultado" value="BUSCAR" /><br /><br />
+   <!-- <fieldset style="width:400px">
         <legend>API ITUNES JSON</legend>
 
         <label>CANCION</label><br />
@@ -142,16 +200,10 @@
         <span id="txtCaratula"></span><br><br>
         <label>PREVIEW CANCION</label><br />
         <span id="txtPreview"></span><br><br>
-    </fieldset>
+    </fieldset> -->
 
 
-    <table id="tabla">
-        <tr>
-            <th onclick="sortPorNombre()">NOMBRE</th>
 
-        </tr>
-
-    </table>
 </body>
 
 </html>
