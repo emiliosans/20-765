@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="estilomapa.css" media="screen" />
+    <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCE4eUM_7OIODBaGTSGYCAVD7OcZVoupgI&callback=initMap"></script>
+    
+
+    <script>
+
+        let divOut = null;
+        let mapa = null;
+        const LATITUD_MADRID = 40.4167;
+        const LONGITUD_MADRID = -3.70325;
+
+
+        function dibujarUbicacion (latitud, longitud) 
+        {
+            //dibujar en el mapa de google un marcador
+            let posicionActual = {lat: latitud, lng: longitud};
+
+            let marcador = new google.maps.Marker(
+                {
+                    position: posicionActual,
+                    title: "Estás aquí"
+                }
+            );
+            marcador.setMap (mapa);
+        }
+
+        function initMap () 
+        {
+            //creame un mapa y me lo dibujas en el punto de anclaje
+            mapa = new google.maps.Map( // es un constructor con parametros
+                document.getElementById("map"), /*primer parametro*/
+                //segundo parametro
+                {
+                    center: { lat: LATITUD_MADRID, lng: LONGITUD_MADRID},
+                    zoom: 8 //el zoom es para q el mapa salga mas alejado o menos
+                }
+            );
+        }
+
+        function encuentrame()
+        {   
+            divOut = document.getElementById("out");
+            //navigator variable predefinida, es un objeto
+            if (!navigator.geolocation) {
+                //si entra en el else es xq estoy en un navegador antiguo q no tiene el API geolocation
+                
+                console.log("estoy en un navegador antiguo q no tiene el API geolocation");
+                fallo();
+                
+            } else {
+                console.log("estoy en un navegador moderno");
+                divOut.innerHTML = "Buscando ...";
+                navigator.geolocation.getCurrentPosition(exito,fallo); //exito y fallo son funciones
+                //geolocation es una API del navegador
+            }
+        }
+        //funcion predefinida, posicion es un parametro q se le pasa predefinido (como la funcion sort de ordenar, mirar apuntes)
+        function exito (posicion) {
+            let  latitud = posicion.coords.latitude;
+            let  longitud = posicion.coords.longitude;
+            divOut.innerHTML = "Latitud = " + latitud + ", longitud = " + longitud;   
+            dibujarUbicacion(latitud,longitud);
+        }
+
+        function fallo () {
+            console.log("No esta disponible la ubicacion");
+            divOut.innerHTML = "No esta disponible la ubicación.";
+        }
+
+    </script>
+</head>
+<body>
+    <input onclick="encuentrame()" type="button" id="btnResultado" value="BUSCAR" /><br /><br />
+    <div id="out"></div>
+    <div id="map"></div>
+</body>
+</html>

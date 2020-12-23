@@ -4,6 +4,7 @@
 <head>
     <title>API ITUNES JSON</title>
     <meta charset="UTF-8">
+    
     <script>
 
         window.onload = function () {
@@ -72,12 +73,12 @@
                             window.alert("EL ARTISTA NO EXISTE");
                             console.log("EL ARTISTA NO EXISTE");
                         } else {
-                            if (document.getElementById("hook")){
+                            if (document.getElementById("hook")) {
                                 document.getElementById("hook").remove();
                             }
                             let body = document.getElementById("body");
                             let divHook = document.createElement("div");
-                            divHook.setAttribute("id","hook");
+                            divHook.setAttribute("id", "hook");
                             body.appendChild(divHook);
                             for (let cantante of letra_rx.results) {
                                 if (cantante.artistName.toLowerCase().includes(artista.toLowerCase())) {
@@ -192,7 +193,7 @@
             fieldsetArtista.appendChild(br8);
 
             let divHook = document.getElementById("hook");
-            
+
             divHook.appendChild(fieldsetArtista);
             body.appendChild(divHook);
         }
@@ -200,7 +201,7 @@
     </script>
 </head>
 
-<body id="body">
+<body id="body" >
     <label>Introduce tu Artista favorito</label><br />
     <input type="text" id="txtArtista" /><br />
     <input onclick="calcular()" type="button" id="btnResultado" value="BUSCAR" /><br /><br />
