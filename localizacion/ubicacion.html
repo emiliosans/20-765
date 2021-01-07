@@ -28,6 +28,13 @@
                 }
             );
             marcador.setMap (mapa);
+            
+            // esto lo que hace es que cuando hagas click en el marcador, centre el mapa
+            //funciones de flecha
+            marcador.addListener("click", () => {
+                mapa.setZoom (15);
+                mapa.setCenter(marcador.getPosition()); 
+            });
         }
 
         function initMap () 

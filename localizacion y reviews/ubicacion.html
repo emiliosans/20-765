@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOCALIZACIÓN Y REVIEWS</title>
+    <link rel="stylesheet" type="text/css" href="estilomapa.css" media="screen" />
+    <script defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCE4eUM_7OIODBaGTSGYCAVD7OcZVoupgI&callback=initMap"></script>
+
+
+
+    <script>
+        /*ENUNCIADO
+            TODO: AÑADIR LAS OPIONES AL EJEMPLO DE UBICACIÓN:
+
+1) ELEGIR UN SITIO
+     averiguar su place id
+     y sus coordenadas
+     
+2) MODIFICAR EL HTML "Donde estoy" (ahora llamado por vuestro sitio elegido en el paso 1)
+
+3) Cuando el usario toque el botón anterior
+centrar el mapa en ese sitio y dibujar un marcador
+
+4) cuando el usuario toque el marcador, dibujar las
+opiniones
+
+    hacer petición AJAX a la nueva api de google
+    places
+    
+    recuperar el JSON
+    
+    y Mostrar los resultados (elegir los campos)
+        */
+
+        let divOut = null;
+        let mapa = null;
+        var xhr = new XMLHttpRequest();
+        const LATITUD_CAPITOLIO = 38.8899389;
+        const LONGITUD_CAPITOLIO = -77.0090505;
+        const URL = "https://maps.googleapis.com/maps/api/place/details/json?placeid=ChIJF8-iISm4t4kRxPgMwfejggQ&key=AIzaSyDSJ0TaBCe7diDWhqwQkzntFLDvrLwbDy0";
+
+
+        function dibujarUbicacion(latitud, longitud) {
+            //dibujar en el mapa de google un marcador
+            let posicionActual = { lat: latitud, lng: longitud };
+
+            let marcador = new google.maps.Marker(
+                {
+                    position: posicionActual,
+                    title: "Estás aquí"
+                }
+            );
+            marcador.setMap(mapa);
+
+            // esto lo que hace es que cuando hagas click en el marcador, centre el mapa
+            //funciones de flecha
+            marcador.addListener("click", () => {
+                mapa.setZoom(15);
+                mapa.setCenter(marcador.getPosition());
+
+                muestraReviews();
+            });
+        }
+
+        function initMap() {
+            //creame un mapa y me lo dibujas en el punto de anclaje
+            mapa = new google.maps.Map( // es un constructor con parametros
+                document.getElementById("map"), /*primer parametro*/
+                //segundo parametro
+                {
+                    center: { lat: LATITUD_CAPITOLIO, lng: LONGITUD_CAPITOLIO },
+                    zoom: 8 //el zoom es para q el mapa salga mas alejado o menos
+                }
+            );
+        }
+
+        function encuentrame() {
+            divOut = document.getElementById("out");
+            //navigator variable predefinida, es un objeto
+            if (!navigator.geolocation) {
+                //si entra en el else es xq estoy en un navegador antiguo q no tiene el API geolocation
+
+                console.log("estoy en un navegador antiguo q no tiene el API geolocation");
+                fallo();
+
+            } else {
+                console.log("estoy en un navegador moderno");
+                divOut.innerHTML = "Buscando ...";
+                navigator.geolocation.getCurrentPosition(exito, fallo); //exito y fallo son funciones
+                //geolocation es una API del navegador
+            }
+        }
+        //funcion predefinida, posicion es un parametro q se le pasa predefinido (como la funcion sort de ordenar, mirar apuntes)
+        function exito(posicion) {
+            // let latitud = posicion.coords.latitude;
+            //let longitud = posicion.coords.longitude;
+
+            let latitud = LATITUD_CAPITOLIO;
+            let longitud = LONGITUD_CAPITOLIO;
+
+            divOut.innerHTML = "Latitud = " + latitud + ", longitud = " + longitud;
+            dibujarUbicacion(latitud, longitud);
+        }
+
+        function fallo() {
+            console.log("No esta disponible la ubicacion");
+            divOut.innerHTML = "No esta disponible la ubicación.";
+        }
+
+        function muestraReviews() {
+            console.log("estoy en muestra reviews con el HTTPXMLRequest");
+            xhr.open("GET", URL);
+            xhr.onreadystatechange = recibirReviews;
+            xhr.send();
+        }
+
+        function recibirReviews() {
+            if (xhr.readyState == 4) {
+                console.log("respuesta rx");
+                switch (xhr.status) {
+                    case 200:
+                        console.log("respuesta OK");
+                        let reviews = xhr.responseText;
+                        console.log("reviews = " + reviews);
+                        reviews = JSON.parse(reviews);
+                        //let cancion = null;
+                        if (reviews.resultCount == 0) {
+                            window.alert("No existe el lugar");
+                            console.log("No existe el lugar");
+                        } else {
+                            //ordenaPorTiempo devuelve el array del JSON con las opiniones ordenadas por antigüedad
+                            let review_opiniones = ordenaPorTiempo(reviews.result.reviews);
+                            if (document.getElementById("reviews")) {
+                                document.getElementById("reviews").remove();
+                            }
+                            let body = document.getElementById("body");
+
+                            let divHook = document.createElement("div");
+                            divHook.setAttribute("id", "reviews");
+                            body.appendChild(divHook);
+
+                            let br4 = document.createElement("br");
+                            body.appendChild(br4);
+
+                            let labelHorarioApertura = document.createElement("label");
+                            labelHorarioApertura.innerHTML = "HORARIOS:";
+                            body.appendChild(labelHorarioApertura);
+
+                            let br7 = document.createElement("br");
+                            body.appendChild(br7);
+
+                            let br9 = document.createElement("br");
+                            body.appendChild(br9);
+
+                            //muestra los horarios de apertura a traves del array del atributo del array reviews.result.opening_hours.weekday_text)
+                            for (let horario of reviews.result.opening_hours.weekday_text) {
+                                let labelHorario = document.createElement("label");
+                                labelHorario.innerHTML = horario;
+                                body.appendChild(labelHorario);
+
+                                let br8 = document.createElement("br");
+                                body.appendChild(br8);
+                            }
+
+                            let br6 = document.createElement("br");
+                            body.appendChild(br6);
+
+                            let labelTituloReviews = document.createElement("label");
+                            labelTituloReviews.innerHTML = "OPINIONES:";
+                            body.appendChild(labelTituloReviews);
+
+                            let br10 = document.createElement("br");
+                            body.appendChild(br10);
+
+                            let br5 = document.createElement("br");
+                            body.appendChild(br5);
+
+                            //muestra las opiniones a partir del array ordenado por tiempo
+                            for (let review of review_opiniones) {
+                                mostrarReview(review);
+                            }
+                        }
+                        break;
+                    case 400:
+                        console.log("COd respuesta " + xhr.status);
+                        console.log("respuesta INCORRECTA");
+                        window.alert("respuesta INCORRECTA");
+
+                        break;
+                    case 204:
+                        console.log("COd respuesta " + xhr.status);
+                        console.log("NO EXISTE EL SITIO");
+                        window.alert("NO EXISTE EL SITIO");
+
+
+                        break;
+                    case 500:
+                        console.log("COd respuesta " + xhr.status);
+                        console.log("ERROR DEL SERVIDOR");
+                        window.alert("ERROR DEL SERVIDOR");
+                        break;
+                    default:
+                        console.log("Cod respuesta " + xhr.status);
+                }
+            }
+        }
+
+        //ordenaPorTiempo devuelve el array del JSON con las opiniones ordenadas por antigüedad
+        function ordenaPorTiempo(reviews) {
+            // borrarTabla();
+            let ordenado = reviews;
+            ordenado.sort(function compare(a, b) {
+                if (a.time > b.time) {
+                    return -1;
+                }
+                if (a.time < b.time) {
+                    return 1;
+                }
+                // a debe ser igual b
+                return 0;
+            });
+
+            return ordenado;
+        }
+
+
+        function mostrarReview(review) {
+            let body = document.getElementById("body");
+
+            let fieldReview = document.createElement("fieldset");
+            fieldReview.setAttribute("style", "width:400px");
+
+            //muestra el nombre del usuario que ha dejado la opinion
+            let nombreLegend = document.createElement("legend");
+            nombreLegend.innerHTML = review.author_name;
+            fieldReview.appendChild(nombreLegend);
+
+            let br = document.createElement("br");
+            fieldReview.appendChild(br);
+
+            //muestra hace cuanto tiempo que se escribio la review
+            let labelTiempo = document.createElement("label");
+            labelTiempo.innerHTML = review.relative_time_description;
+            fieldReview.appendChild(labelTiempo);
+
+            let br1 = document.createElement("br");
+            fieldReview.appendChild(br1);
+
+            //muestra el número de estrellas dadas en la review con una imagen .png
+            for (let i = 0; i < review.rating; i++) {
+                let spanEstrellas = document.createElement("span");
+                spanEstrellas.innerHTML = "<img width=" + 20 + " height=" + 20 + " src='" + "estrella.png" + "'>";
+                fieldReview.appendChild(spanEstrellas);
+            }
+
+            let br2 = document.createElement("br");
+            fieldReview.appendChild(br2);
+
+            //muestra el texto de la opinion
+            let labelOpinion = document.createElement("label");
+            labelOpinion.innerHTML = review.text;
+            fieldReview.appendChild(labelOpinion);
+
+            let br3 = document.createElement("br");
+            fieldReview.appendChild(br3);
+
+            let divHook = document.getElementById("reviews");
+
+            divHook.appendChild(fieldReview);
+            body.appendChild(divHook);
+        }
+
+    </script>
+</head>
+
+<body id="body">
+    <input onclick="encuentrame()" type="button" id="btnResultado" value="CAPITOLIO WASHINGTON DC" /><br /><br />
+    <div id="out"></div>
+    <div id="map"></div>
+    <div id="reviews"></div>
+</body>
+
+</html>
